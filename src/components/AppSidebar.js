@@ -29,4 +29,4 @@ class AppSidebar extends ShadowElement {
 	}
 }
 
-customElements.define('app-sidebar', AppSidebar)
+export default AppSidebar.define('app-sidebar')

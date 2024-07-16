@@ -1,6 +1,5 @@
 import { BaseElement } from '../../core/base/BaseElement.js'
 import { html, styleMap } from '../../core/utils/html.js'
-import { defineElement } from '../../core/utils/defineElement.js'
 
 class LayoutAltPage extends BaseElement {
 	constructor() {
@@ -39,4 +38,4 @@ class LayoutAltPage extends BaseElement {
 	}
 }
 
-export default defineElement('layout-alt-page', LayoutAltPage)
+export default LayoutAltPage.define('layout-alt-page')

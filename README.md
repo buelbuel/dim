@@ -43,6 +43,12 @@ import { BaseElement } from '../../core/base/BaseElement.js'
 import { html, styleMap } from '../../core/utils/html.js'
 
 class LayoutAltPage extends BaseElement {
+	constructor() {
+		super()
+		this.setAttribute('title', 'Alternative Layout')
+		this.setAttribute('description', 'Alternative layout of the application.')
+	}
+
 	connectedCallback() {
 		super.connectedCallback()
 		this.setSidebarContent()
@@ -51,7 +57,7 @@ class LayoutAltPage extends BaseElement {
 	setSidebarContent() {
 		const styles = {
 			'text-align': 'center',
-			'color': 'var(--color-gray-100)',
+			color: 'var(--color-gray-100)',
 		}
 
 		const sidebarContent = html` <p style="${styleMap(styles)}">Sidebar Content.</p> `
@@ -73,9 +79,7 @@ class LayoutAltPage extends BaseElement {
 	}
 }
 
-customElements.define('layout-alt-page', LayoutAltPage)
-
-export default LayoutAltPage
+export default LayoutAltPage.define('layout-alt-page')
 ```
 
 ## Getting Started
@@ -89,7 +93,7 @@ export default LayoutAltPage
 
 ### Router
 
-dim includes a simple router that allows for easy navigation and layout switching. Define your routes in `src/routes.js`.
+dim includes a simple router that allows for easy navigation and layout switching SPA-style. Define your routes in `src/routes.js`.
 
 ### Components
 

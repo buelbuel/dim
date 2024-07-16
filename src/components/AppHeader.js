@@ -83,4 +83,4 @@ class AppHeader extends ShadowElement {
 	}
 }
 
-customElements.define('app-header', AppHeader)
+export default AppHeader.define('app-header')

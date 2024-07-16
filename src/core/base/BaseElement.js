@@ -5,26 +5,31 @@
  * @extends HTMLElement
  */
 export class BaseElement extends HTMLElement {
-	constructor() {
-		super()
-	}
+    constructor() {
+        super()
+    }
 
-	connectedCallback() {
-		this.update()
-		this.addEventListeners()
-	}
+    connectedCallback() {
+        this.update()
+        this.addEventListeners()
+    }
 
-	disconnectedCallback() {
-		this.removeEventListeners()
-	}
+    disconnectedCallback() {
+        this.removeEventListeners()
+    }
 
-	update() {
-		this.innerHTML = this.render()
-	}
+    update() {
+        this.innerHTML = this.render()
+    }
 
-	render() {}
+    render() {}
 
-	addEventListeners() {}
+    addEventListeners() {}
 
-	removeEventListeners() {}
+    removeEventListeners() {}
+
+    static define(name) {
+        customElements.define(name, this)
+        return this
+    }
 }

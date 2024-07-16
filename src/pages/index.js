@@ -1,6 +1,5 @@
 import { BaseElement } from '../core/base/BaseElement.js'
 import { html } from '../core/utils/html.js'
-import { defineElement } from '../core/utils/defineElement.js'
 
 class StartPage extends BaseElement {
 	constructor() {
@@ -19,4 +18,4 @@ class StartPage extends BaseElement {
 	}
 }
 
-export default defineElement('start-page', StartPage)
+export default StartPage.define('start-page')

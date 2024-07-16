@@ -23,4 +23,4 @@ class AppFooter extends ShadowElement {
 	}
 }
 
-customElements.define('app-footer', AppFooter)
+export default AppFooter.define('app-footer')
