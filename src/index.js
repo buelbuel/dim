@@ -31,9 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * @returns {Promise} The environment variables of the application.
  */
 loadEnv().then((env) => {
-	if (env.APP_TITLE) document.title = env.APP_TITLE
-	if (env.APP_DESCRIPTION)
-		document
-			.querySelector('meta[name="description"]')
-			.setAttribute('content', env.APP_DESCRIPTION)
+	if (env.API_ENDPOINT) {
+		window.API_ENDPOINT = env.API_ENDPOINT
+	}
 })

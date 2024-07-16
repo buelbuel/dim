@@ -1,7 +1,14 @@
 import { BaseElement } from '../core/base/BaseElement.js'
 import { html } from '../core/utils/html.js'
+import { defineElement } from '../core/utils/defineElement.js'
 
 class StartPage extends BaseElement {
+	constructor() {
+		super()
+		this.setAttribute('title', 'Start')
+		this.setAttribute('description', 'Description of the Start page.')
+	}
+
 	render() {
 		return html`
 			<section class="start-page container">
@@ -12,6 +19,4 @@ class StartPage extends BaseElement {
 	}
 }
 
-customElements.define('start-page', StartPage)
-
-export default StartPage
+export default defineElement('start-page', StartPage)

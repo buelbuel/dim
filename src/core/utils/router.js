@@ -51,16 +51,21 @@ async function renderContent(route) {
 				app.querySelector('#app-content').appendChild(componentInstance)
 
 				app.className = routeInfo.layout
+
+				setTitle(routeInfo.title || componentInstance.constructor.name)
 			} else {
 				console.error('Invalid component or layout:', Component, layoutTemplate)
 				app.innerHTML = '<div>Error: Invalid component or layout</div>'
+				setTitle('Error')
 			}
 		} catch (error) {
 			console.error('Error loading module:', error)
 			app.innerHTML = '<div>Error loading page</div>'
+			setTitle('Error')
 		}
 	} else {
 		app.innerHTML = '<div>Page not found</div>'
+		setTitle('Page Not Found')
 	}
 }
 
@@ -73,4 +78,14 @@ async function renderContent(route) {
 function navigate(path) {
 	window.history.pushState({}, '', path)
 	renderContent(path)
+}
+
+/**
+ * Sets the title of the page.
+ *
+ * @param {String} pageTitle - The title of the page.
+ */
+function setTitle(pageTitle) {
+	const baseTitle = window.APP_TITLE || 'dim'
+	document.title = `${pageTitle} | ${baseTitle}`
 }
