@@ -34,8 +34,6 @@ export class BaseElement extends HTMLElement {
 	}
 }
 
-import { BaseElement } from './BaseElement.js'
-
 /**
  * ShadowElement is the base class for elements with shadow DOM.
  *
