@@ -1,0 +1,31 @@
+{
+	"name": "dim",
+	"version": "0.0.1",
+	"description": "Core library for dim web component boilerplate",
+	"main": "dist/dim.min.js",
+	"type": "module",
+	"exports": {
+	  "./base": "./src/base/index.js",
+	  "./utils": "./src/utils/index.js"
+	},
+	"scripts": {
+		"format": "prettier --write \"src/**/*.js\"",
+		"build": "npm run format && node tasks/build.js",
+		"version": "npm run build && git add -A dist",
+		"postversion": "git push && git push --tags"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yourusername/dim.git"
+	},
+	"keywords": [
+		"web-components",
+		"no-dependencies"
+	],
+	"author": "Your Name",
+	"license": "MIT",
+	"devDependencies": {
+		"prettier": "^3.3.3",
+		"terser": "^5.31.3"
+	}
+}

@@ -1,11 +1,95 @@
 /**
+ * BaseElement offers some abstract methods for custom elements to reduce boilerplate code.
+ *
+ * @module BaseElement
+ * @extends HTMLElement
+ */
+export class BaseElement extends HTMLElement {
+	constructor() {
+		super()
+	}
+
+	connectedCallback() {
+		this.update()
+		this.addEventListeners()
+	}
+
+	disconnectedCallback() {
+		this.removeEventListeners()
+	}
+
+	update() {
+		this.innerHTML = this.render()
+	}
+
+	render() {}
+
+	addEventListeners() {}
+
+	removeEventListeners() {}
+
+	static define(name) {
+		customElements.define(name, this)
+		return this
+	}
+}
+
+import { BaseElement } from './BaseElement.js'
+
+/**
+ * ShadowElement is the base class for elements with shadow DOM.
+ *
+ * @module ShadowElement
+ * @extends BaseElement
+ */
+export class ShadowElement extends BaseElement {
+	constructor() {
+		super()
+		this.attachShadow({ mode: 'open' })
+	}
+
+	update() {
+		this.shadowRoot.innerHTML = this.render()
+	}
+
+	render() {}
+}
+
+/**
+ * A tagged template literal function for creating HTML templates.
+ *
+ * @module html
+ * @param {TemplateStringsArray} strings - The template strings.
+ * @param {...any} values - The values to be interpolated into the template.
+ * @returns {string} The final HTML string.
+ */
+export const html = (strings, ...values) => {
+	return strings.reduce((result, string, i) => {
+		const value = values[i - 1]
+		return result + (value !== undefined ? value : '') + string
+	})
+}
+
+/**
+ * Converts a JavaScript object of styles into a CSS string.
+ *
+ * @module styleMap
+ * @param {Object} styles - The styles object.
+ * @returns {string} The CSS string.
+ */
+export const styleMap = (styles) => {
+	return Object.entries(styles)
+		.map(([key, value]) => `${key}: ${value}`)
+		.join('; ')
+}
+
+/**
  * Defines the router of the application.
  *
  * @module router
  * @param {Object} routes - The routes of the application.
  * @param {Object} app - The application container.
  */
-import { routes } from '../../routes.js'
 
 const app = document.querySelector('#app')
 
@@ -14,17 +98,17 @@ const app = document.querySelector('#app')
  *
  * @param {Function} initRouter - The router of the application.
  */
-export function initRouter() {
+export function initRouter(routes) {
 	window.addEventListener('navigate', (event) => {
 		const { path } = event.detail
-		navigate(path)
+		navigate(path, routes)
 	})
 
 	window.addEventListener('popstate', () => {
-		renderContent(window.location.pathname)
+		renderContent(window.location.pathname, routes)
 	})
 
-	renderContent(window.location.pathname)
+	renderContent(window.location.pathname, routes)
 }
 
 /**
@@ -33,7 +117,7 @@ export function initRouter() {
  * @param {Function} renderContent - The content rendering function of the application.
  * @param {Object} route - The route of the application.
  */
-async function renderContent(route) {
+async function renderContent(route, routes) {
 	const routeInfo = routes[route]
 
 	if (routeInfo) {
@@ -75,9 +159,9 @@ async function renderContent(route) {
  * @param {Function} navigate - The navigation function of the application.
  * @param {String} path - The path of the application.
  */
-function navigate(path) {
+function navigate(path, routes) {
 	window.history.pushState({}, '', path)
-	renderContent(path)
+	renderContent(path, routes)
 }
 
 /**
@@ -89,3 +173,4 @@ function setTitle(pageTitle) {
 	const baseTitle = window.APP_TITLE || 'dim'
 	document.title = `${pageTitle} | ${baseTitle}`
 }
+
