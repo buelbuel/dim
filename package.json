@@ -1,12 +1,12 @@
 {
 	"name": "dim",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Core library for dim web component boilerplate",
 	"main": "dist/dim.min.js",
 	"type": "module",
 	"exports": {
-	  "./base": "./src/base/index.js",
-	  "./utils": "./src/utils/index.js"
+		"./base": "./src/base/index.js",
+		"./utils": "./src/utils/index.js"
 	},
 	"scripts": {
 		"format": "prettier --write \"src/**/*.js\"",
