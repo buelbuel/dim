@@ -5,7 +5,6 @@
  * @param {Object} routes - The routes of the application.
  * @param {Object} app - The application container.
  */
-
 const app = document.querySelector('#app')
 
 /**

@@ -1,4 +1,5 @@
 {
-	"name": "Node.js",
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm"
+	"name": "dim",
+	"image": "mcr.microsoft.com/devcontainers/base:alpine-3.20",
+	"postCreateCommand": "chmod +x build.sh"
 }
