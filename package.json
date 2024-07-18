@@ -1,18 +1,10 @@
 {
 	"name": "dim",
-	"version": "0.0.5",
+	"version": "0.1.0",
 	"description": "Core library for dim web component boilerplate",
 	"main": "dist/dim.min.js",
 	"module": "dist/dim.js",
 	"type": "module",
-	"exports": {
-		".": {
-			"import": "./dist/dim.js",
-			"require": "./dist/dim.min.js"
-		},
-		"./base": "./src/base/index.js",
-		"./utils": "./src/utils/index.js"
-	},
 	"files": [
 		"dist",
 		"src"
