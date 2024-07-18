@@ -29,7 +29,7 @@ Copy the distributed files or just add to your index.html:
 
 ```html
 <script type="module">
-	import * as dim from 'https://cdn.jsdelivr.net/gh/buelbuel/dim@v0.0.3/dist/dim.min.js'
+	import * as dim from 'https://cdn.jsdelivr.net/gh/buelbuel/dim@latest/dist/dim.min.js'
 	window.dim = dim
 </script>
 ```
@@ -75,6 +75,32 @@ const styles = {
 }
 
 const template = html` <div style="${styleMap(styles)}">Styled content</div> `
+```
+
+### Reactive Properties
+
+```js
+const { BaseElement } = dim
+
+class MyComponent extends BaseElement {
+	constructor() {
+		super()
+		this.defineReactiveProperty('count', 0)
+	}
+
+	render() {
+		return html`
+			<div>My Component</div>
+			<button id="increment">Increment ${this.count}</button>
+		`
+	}
+
+	addEventListeners() {
+		this.addEventListenerWithCleanup('#increment', 'click', () => {
+			this.count++
+		})
+	}
+}
 ```
 
 ### Router
