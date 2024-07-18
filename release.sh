@@ -15,5 +15,5 @@ git commit -m "Release version $VERSION"
 git tag $VERSION
 git push
 git push --tags
-gh release create $VERSION --target main --latest
-gh release upload $VERSION ./dist/dim.js ./dist/dim.min.js --clobber --generate-notes --notes "" --title "Release $VERSION" --prerelease false --draft false --verify-tag true
+gh release create $VERSION --target main --latest --generate-notes --notes "" --title "Release $VERSION" --prerelease=false --draft=false
+gh release upload $VERSION ./dist/dim.js ./dist/dim.min.js --clobber
