@@ -12,6 +12,7 @@
  * @method addEventListenerWithCleanup - The add event listener with cleanup method.
  * @method addEventListeners - The add event listeners method.
  * @method removeEventListeners - The remove event listeners method.
+ * @method t - The translation method.
  * @method render - Render HTML content.
  * @method static define - Define custom names for components.
  *
@@ -26,6 +27,7 @@ export class BaseElement extends HTMLElement {
 	connectedCallback() {
 		this.update()
 		this.addEventListeners()
+		document.addEventListener('language-changed', () => this.update())
 	}
 
 	disconnectedCallback() {
@@ -82,6 +84,10 @@ export class BaseElement extends HTMLElement {
 			element.removeEventListener(event, handler)
 		})
 		this._eventListeners = []
+	}
+
+	t(key) {
+		return i18n.t(key)
 	}
 
 	render() {}

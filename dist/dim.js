@@ -12,6 +12,7 @@
  * @method addEventListenerWithCleanup - The add event listener with cleanup method.
  * @method addEventListeners - The add event listeners method.
  * @method removeEventListeners - The remove event listeners method.
+ * @method t - The translation method.
  * @method render - Render HTML content.
  * @method static define - Define custom names for components.
  *
@@ -26,6 +27,7 @@ export class BaseElement extends HTMLElement {
 	connectedCallback() {
 		this.update()
 		this.addEventListeners()
+		document.addEventListener('language-changed', () => this.update())
 	}
 
 	disconnectedCallback() {
@@ -82,6 +84,10 @@ export class BaseElement extends HTMLElement {
 			element.removeEventListener(event, handler)
 		})
 		this._eventListeners = []
+	}
+
+	t(key) {
+		return i18n.t(key)
 	}
 
 	render() {}
@@ -162,6 +168,34 @@ export const styleMap = (styles) => {
 	return Object.entries(styles)
 		.map(([key, value]) => `${key}: ${value}`)
 		.join('; ')
+}
+/**
+ * Internationalization module
+ * 
+ */
+export const i18n = {
+	translations: {},
+
+	get currentLanguage() {
+		return localStorage.getItem('currentLanguage') || 'en'
+	},
+
+	set currentLanguage(lang) {
+		localStorage.setItem('currentLanguage', lang)
+	},
+
+	t(key) {
+		return this.translations[this.currentLanguage][key] || key
+	},
+
+	setLanguage(lang) {
+		this.currentLanguage = lang
+		document.dispatchEvent(new CustomEvent('language-changed'))
+	},
+
+	addTranslations(lang, translations) {
+		this.translations[lang] = { ...this.translations[lang], ...translations }
+	},
 }
 /**
  * Define a reactive property on a target object.

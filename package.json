@@ -1,6 +1,6 @@
 {
 	"name": "dim",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "Core library for dim web component boilerplate",
 	"main": "dist/dim.min.js",
 	"module": "dist/dim.js",
