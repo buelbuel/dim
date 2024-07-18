@@ -25,4 +25,4 @@ fi
 
 mkdir -p dist
 cat src/**/*.js >dist/dim.js
-/bin/swc-linux-arm64-gnu compile dist/dim.js --out-file dist/dim.min.js --config-file .swrc
+/bin/swc-linux-arm64-gnu compile dist/dim.js --out-file dist/dim.min.js --config-file .swcrc

@@ -1,8 +1,10 @@
 /**
  * ShadowElement is the base class for elements with shadow DOM.
  *
- * @module ShadowElement
  * @extends BaseElement
+ * @method update - The update method.
+ * @method render - Render HTML content.
+ * @method static define - Define custom names for components.
  */
 export class ShadowElement extends BaseElement {
 	constructor() {

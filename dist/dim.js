@@ -1,12 +1,26 @@
 /**
- * BaseElement offers some abstract methods for custom elements to reduce boilerplate code.
+ * BaseElement is a base class for custom elements that provides reactive properties and lifecycle methods.
  *
- * @module BaseElement
  * @extends HTMLElement
+ * @property {boolean} _updateRequested - The flag to indicate if an update has been requested.
+ * @property {Array} _eventListeners - The array of event listeners.
+ * @method connectedCallback - The connected callback method.
+ * @method disconnectedCallback - The disconnected callback method.
+ * @method update - The update method.
+ * @method requestUpdate - The request update method.
+ * @method defineReactiveProperty - The define reactive property method.
+ * @method addEventListenerWithCleanup - The add event listener with cleanup method.
+ * @method addEventListeners - The add event listeners method.
+ * @method removeEventListeners - The remove event listeners method.
+ * @method render - Render HTML content.
+ * @method static define - Define custom names for components.
+ *
  */
 export class BaseElement extends HTMLElement {
 	constructor() {
 		super()
+		this._updateRequested = false
+		this._eventListeners = []
 	}
 
 	connectedCallback() {
@@ -19,14 +33,58 @@ export class BaseElement extends HTMLElement {
 	}
 
 	update() {
-		this.innerHTML = this.render()
+		const oldContent = this.innerHTML
+		const newContent = this.render()
+
+		if (oldContent !== newContent) {
+			this.innerHTML = newContent
+			this.addEventListeners()
+		}
 	}
 
-	render() {}
+	requestUpdate() {
+		if (!this._updateRequested) {
+			this._updateRequested = true
+			Promise.resolve().then(() => {
+				this._updateRequested = false
+				this.update()
+			})
+		}
+	}
+
+	defineReactiveProperty(propertyKey, initialValue) {
+		defineReactiveProperty(this, propertyKey, initialValue)
+	}
+
+	addEventListenerWithCleanup(selector, event, handler) {
+		const element = this.querySelector(selector)
+		if (element) {
+			const existingListener = this._eventListeners.find(
+				(listener) => listener.element === element && listener.event === event
+			)
+
+			if (existingListener) {
+				element.removeEventListener(event, existingListener.handler)
+				this._eventListeners = this._eventListeners.filter(
+					(listener) => listener !== existingListener
+				)
+			}
+
+			element.addEventListener(event, handler)
+			this._eventListeners.push({ element, event, handler })
+		}
+	}
 
 	addEventListeners() {}
 
-	removeEventListeners() {}
+	removeEventListeners() {
+		this._eventListeners.forEach(({ element, event, handler }) => {
+			element.removeEventListener(event, handler)
+		})
+		this._eventListeners = []
+	}
+
+	render() {}
 
 	static define(name) {
 		customElements.define(name, this)
@@ -36,8 +94,10 @@ export class BaseElement extends HTMLElement {
 /**
  * ShadowElement is the base class for elements with shadow DOM.
  *
- * @module ShadowElement
  * @extends BaseElement
+ * @method update - The update method.
+ * @method render - Render HTML content.
+ * @method static define - Define custom names for components.
  */
 export class ShadowElement extends BaseElement {
 	constructor() {
@@ -52,9 +112,35 @@ export class ShadowElement extends BaseElement {
 	render() {}
 }
 /**
+ * Utility functions for adding event listeners
+ *
+ * @param {HTMLElement} element - The element to add the event listener to.
+ * @param {string} event - The event to listen for.
+ * @param {Function} handler - The event handler function.
+ */
+export function addEventListenerOnce(element, event, handler) {
+	const eventKey = `__${event}_handler__`
+
+	if (element[eventKey]) {
+		element.removeEventListener(event, element[eventKey])
+	}
+	element[eventKey] = handler
+	element.addEventListener(event, handler)
+}
+
+/**
+ * Utility functions for removing event listeners
+ *
+ * @param {HTMLElement} element - The element to add the event listener to.
+ * @param {string} event - The event to listen for.
+ * @param {Function} handler - The event handler function.
+ */
+export function removeEventListener(element, event, handler) {
+	element.removeEventListener(event, handler)
+}
+/**
  * A tagged template literal function for creating HTML templates.
  *
- * @module html
  * @param {TemplateStringsArray} strings - The template strings.
  * @param {...any} values - The values to be interpolated into the template.
  * @returns {string} The final HTML string.
@@ -69,7 +155,6 @@ export const html = (strings, ...values) => {
 /**
  * Converts a JavaScript object of styles into a CSS string.
  *
- * @module styleMap
  * @param {Object} styles - The styles object.
  * @returns {string} The CSS string.
  */
@@ -79,9 +164,32 @@ export const styleMap = (styles) => {
 		.join('; ')
 }
 /**
+ * Define a reactive property on a target object.
+ *
+ * @param {Object} target - The target object.
+ * @param {string} propertyKey - The key of the property.
+ * @param {any} initialValue - The initial value of the property.
+ */
+export function defineReactiveProperty(target, propertyKey, initialValue) {
+	let value = initialValue
+
+	Object.defineProperty(target, propertyKey, {
+		get() {
+			return value
+		},
+
+		set(newValue) {
+			value = newValue
+			target.requestUpdate()
+		},
+
+		configurable: true,
+		enumerable: true,
+	})
+}
+/**
  * Defines the router of the application.
  *
- * @module router
  * @param {Object} routes - The routes of the application.
  * @param {Object} app - The application container.
  */
@@ -127,9 +235,7 @@ async function renderContent(route, routes) {
 				app.innerHTML = ''
 				app.appendChild(layoutContent)
 				app.querySelector('#app-content').appendChild(componentInstance)
-
 				app.className = routeInfo.layout
-
 				setTitle(routeInfo.title || componentInstance.constructor.name)
 			} else {
 				console.error('Invalid component or layout:', Component, layoutTemplate)

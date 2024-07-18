@@ -10,8 +10,7 @@ VERSION=$(get_version)
 
 source .env && export GH_TOKEN
 
-git add -A dist/
-git commit -m "Release version $VERSION"
+git commit -am "Release version $VERSION"
 git tag $VERSION
 git push
 git push --tags

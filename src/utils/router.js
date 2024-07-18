@@ -1,7 +1,6 @@
 /**
  * Defines the router of the application.
  *
- * @module router
  * @param {Object} routes - The routes of the application.
  * @param {Object} app - The application container.
  */
@@ -47,9 +46,7 @@ async function renderContent(route, routes) {
 				app.innerHTML = ''
 				app.appendChild(layoutContent)
 				app.querySelector('#app-content').appendChild(componentInstance)
-
 				app.className = routeInfo.layout
-
 				setTitle(routeInfo.title || componentInstance.constructor.name)
 			} else {
 				console.error('Invalid component or layout:', Component, layoutTemplate)
