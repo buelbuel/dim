@@ -116,6 +116,18 @@ const routes = {
 initRouter(routes)
 ```
 
+### Internationalization
+
+```js
+const { i18n } = dim
+
+i18n.addTranslations('en', {
+	'hello': 'Hello',
+})
+
+<p>${this.t('hello')}</p>
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
