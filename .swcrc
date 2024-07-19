@@ -18,7 +18,7 @@
 				"conditionals": true,
 				"dead_code": true,
 				"directives": true,
-				"drop_console": false,
+				"drop_console": true,
 				"drop_debugger": true,
 				"evaluate": true,
 				"expression": false,

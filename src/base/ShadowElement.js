@@ -9,9 +9,25 @@ export class ShadowElement extends BaseElement {
 	constructor() {
 		super()
 		/**
-		 * @type {ShadowRoot}
+		 * The shadow root or fallback to the element itself.
+		 * @type {ShadowRoot|HTMLElement}
+		 * @private
 		 */
-		this.shadowRoot = this.attachShadow({ mode: 'open' })
+		this._shadowRoot = this.attachShadow ? this.attachShadow({ mode: 'open' }) : this
+
+		if (this._shadowRoot === this) {
+			console.warn(
+				'ShadowDOM is not supported in this environment. Falling back to light DOM.'
+			)
+		}
+	}
+
+	/**
+	 * Gets the shadow root or the element itself if Shadow DOM is not supported.
+	 * @returns {ShadowRoot|HTMLElement}
+	 */
+	get shadowRoot() {
+		return this._shadowRoot
 	}
 
 	/**
@@ -27,5 +43,7 @@ export class ShadowElement extends BaseElement {
 	 * @returns {string} The HTML content to be rendered in the shadow DOM.
 	 * @override
 	 */
-	render() {}
+	render() {
+		return ''
+	}
 }
