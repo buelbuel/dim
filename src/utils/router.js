@@ -56,18 +56,18 @@ async function renderContent(route, routes) {
 				setDescription(description)
 			} else {
 				console.error('Invalid component or layout:', Component, layoutTemplate)
-				app.innerHTML = '<div>Error: Invalid component or layout</div>'
+				app.innerHTML = i18n.t('error_invalid_component_or_layout')
 				setTitle(i18n.t('error'))
 				setDescription(i18n.t('error_invalid_component_or_layout'))
 			}
 		} catch (error) {
 			console.error('Error loading module:', error)
-			app.innerHTML = '<div>Error loading page</div>'
+			app.innerHTML = i18n.t('error_loading_page')
 			setTitle(i18n.t('error'))
 			setDescription(i18n.t('error_loading_page'))
 		}
 	} else {
-		app.innerHTML = '<div>Page not found</div>'
+		app.innerHTML = i18n.t('page_not_found')
 		setTitle(i18n.t('page_not_found'))
 		setDescription(i18n.t('page_not_found_description'))
 	}
@@ -99,7 +99,7 @@ function setTitle(pageTitle) {
 
 /**
  * Sets the description of the page.
- * 
+ *
  * @param {String} description - The description of the page.
  * @returns {HTMLElement} The meta description element.
  */

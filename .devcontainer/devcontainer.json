@@ -6,7 +6,9 @@
 			"extensions": [
 				"ms-azuretools.vscode-docker",
 				"esbenp.prettier-vscode",
-				"foxundermoon.shell-format"
+				"foxundermoon.shell-format",
+				"github.vscode-github-actions",
+				"redhat.vscode-yaml"
 			],
 			"settings": {
 				"prettier.printWidth": 100,

@@ -1,6 +1,6 @@
 # dim
 
-dim is a web component helper library, designed as a sane alternative to the node madness of todays web. It focuses on simplicity and adherence to web standards only, offering some of the quality-of-life features found in lit, but with zero dependencies.
+dim is an idiomatic web component helper library, designed as a sane alternative to the node madness of todays web. It focuses on simplicity and adherence to web standards only, offering quality-of-life features - but with zero dependencies.
 
 You can find an example at [dim-template](https://github.com/buelbuel/dim-template)
 
@@ -22,6 +22,8 @@ By using dim, you can create modern web applications with a familiar component-b
 -   Simple router
 -   Abstracted HTML and Shadow Element components for less boilerplate
 -   Utility functions for HTML templating and styling
+-   Reactivity
+-   i18n
 
 ## Installation
 
