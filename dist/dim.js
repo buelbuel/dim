@@ -1,38 +1,44 @@
 /**
  * BaseElement is a base class for custom elements that provides reactive properties and lifecycle methods.
- *
  * @extends HTMLElement
- * @property {boolean} _updateRequested - The flag to indicate if an update has been requested.
- * @property {Array} _eventListeners - The array of event listeners.
- * @method connectedCallback - The connected callback method.
- * @method disconnectedCallback - The disconnected callback method.
- * @method update - The update method.
- * @method requestUpdate - The request update method.
- * @method defineReactiveProperty - The define reactive property method.
- * @method addEventListenerWithCleanup - The add event listener with cleanup method.
- * @method addEventListeners - The add event listeners method.
- * @method removeEventListeners - The remove event listeners method.
- * @method t - The translation method.
- * @method render - Render HTML content.
- * @method static define - Define custom names for components.
  */
 export class BaseElement extends HTMLElement {
+	/**
+	 * Creates an instance of BaseElement.
+	 */
 	constructor() {
 		super()
+		/**
+		 * @private
+		 * @type {boolean}
+		 */
 		this._updateRequested = false
+		/**
+		 * @private
+		 * @type {Array<{element: Element, event: string, handler: Function}>}
+		 */
 		this._eventListeners = []
 	}
 
+	/**
+	 * Invoked when the element is added to the DOM.
+	 */
 	connectedCallback() {
 		this.update()
 		this.addEventListeners()
 		document.addEventListener('language-changed', () => this.update())
 	}
 
+	/**
+	 * Invoked when the element is removed from the DOM.
+	 */
 	disconnectedCallback() {
 		this.removeEventListeners()
 	}
 
+	/**
+	 * Updates the element's content.
+	 */
 	update() {
 		const oldContent = this.innerHTML
 		const newContent = this.render()
@@ -43,6 +49,9 @@ export class BaseElement extends HTMLElement {
 		}
 	}
 
+	/**
+	 * Requests an update to be performed on the next animation frame.
+	 */
 	requestUpdate() {
 		if (!this._updateRequested) {
 			this._updateRequested = true
@@ -53,10 +62,21 @@ export class BaseElement extends HTMLElement {
 		}
 	}
 
+	/**
+	 * Defines a reactive property on the element.
+	 * @param {string} propertyKey - The name of the property.
+	 * @param {*} initialValue - The initial value of the property.
+	 */
 	defineReactiveProperty(propertyKey, initialValue) {
 		defineReactiveProperty(this, propertyKey, initialValue)
 	}
 
+	/**
+	 * Adds an event listener with cleanup.
+	 * @param {string} selector - The CSS selector for the target element.
+	 * @param {string} event - The name of the event.
+	 * @param {Function} handler - The event handler function.
+	 */
 	addEventListenerWithCleanup(selector, event, handler) {
 		const element = this.querySelector(selector)
 		if (element) {
@@ -76,8 +96,14 @@ export class BaseElement extends HTMLElement {
 		}
 	}
 
+	/**
+	 * Adds event listeners to the element.
+	 */
 	addEventListeners() {}
 
+	/**
+	 * Removes all event listeners from the element.
+	 */
 	removeEventListeners() {
 		this._eventListeners.forEach(({ element, event, handler }) => {
 			element.removeEventListener(event, handler)
@@ -85,12 +111,26 @@ export class BaseElement extends HTMLElement {
 		this._eventListeners = []
 	}
 
+	/**
+	 * Translates a key to the current language.
+	 * @param {string} key - The translation key.
+	 * @returns {string} The translated string.
+	 */
 	t(key) {
 		return i18n.t(key)
 	}
 
+	/**
+	 * Renders the element's content.
+	 * @returns {string} The HTML content to be rendered.
+	 */
 	render() {}
 
+	/**
+	 * Defines the custom element.
+	 * @param {string} name - The name for the custom element.
+	 * @returns {typeof BaseElement} The class constructor.
+	 */
 	static define(name) {
 		customElements.define(name, this)
 		return this
@@ -98,27 +138,37 @@ export class BaseElement extends HTMLElement {
 }
 /**
  * ShadowElement is the base class for elements with shadow DOM.
- *
  * @extends BaseElement
- * @method update - The update method.
- * @method render - Render HTML content.
- * @method static define - Define custom names for components.
  */
 export class ShadowElement extends BaseElement {
+	/**
+	 * Creates an instance of ShadowElement and attaches a shadow root.
+	 */
 	constructor() {
 		super()
-		this.attachShadow({ mode: 'open' })
+		/**
+		 * @type {ShadowRoot}
+		 */
+		this.shadowRoot = this.attachShadow({ mode: 'open' })
 	}
 
+	/**
+	 * Updates the element's shadow DOM content.
+	 * @override
+	 */
 	update() {
 		this.shadowRoot.innerHTML = this.render()
 	}
 
+	/**
+	 * Renders the element's shadow DOM content.
+	 * @returns {string} The HTML content to be rendered in the shadow DOM.
+	 * @override
+	 */
 	render() {}
 }
 /**
- * Utility functions for adding event listeners
- *
+ * Adds an event listener to an element that will be removed after its first invocation.
  * @param {HTMLElement} element - The element to add the event listener to.
  * @param {string} event - The event to listen for.
  * @param {Function} handler - The event handler function.
@@ -134,21 +184,23 @@ export function addEventListenerOnce(element, event, handler) {
 }
 
 /**
- * Utility functions for removing event listeners
- *
- * @param {HTMLElement} element - The element to add the event listener to.
- * @param {string} event - The event to listen for.
- * @param {Function} handler - The event handler function.
+ * Removes an event listener from an element.
+ * @param {HTMLElement} element - The element to remove the event listener from.
+ * @param {string} event - The event to stop listening for.
+ * @param {Function} handler - The event handler function to remove.
  */
 export function removeEventListener(element, event, handler) {
 	element.removeEventListener(event, handler)
 }
 /**
  * A tagged template literal function for creating HTML templates.
- *
- * @param {TemplateStringsArray} strings - The template strings.
- * @param {...any} values - The values to be interpolated into the template.
- * @returns {string} The final HTML string.
+ * @param {TemplateStringsArray} strings - The static parts of the template.
+ * @param {...any} values - The dynamic values to be interpolated into the template.
+ * @returns {string} The final HTML string with interpolated values.
+ * @example
+ * const name = 'World'
+ * const greeting = html`<h1>Hello, ${name}!</h1>`
+ * // Returns: "<h1>Hello, World!</h1>"
  */
 export const html = (strings, ...values) => {
 	return strings.reduce((result, string, i) => {
@@ -159,9 +211,12 @@ export const html = (strings, ...values) => {
 
 /**
  * Converts a JavaScript object of styles into a CSS string.
- *
- * @param {Object} styles - The styles object.
- * @returns {string} The CSS string.
+ * @param {Object.<string, string|number>} styles - An object where keys are CSS property names and values are CSS values.
+ * @returns {string} A semicolon-separated string of CSS property-value pairs.
+ * @example
+ * const styles = { color: 'red', fontSize: '14px' }
+ * const cssString = styleMap(styles)
+ * // Returns: "color: red; fontSize: 14px"
  */
 export const styleMap = (styles) => {
 	return Object.entries(styles)
@@ -170,20 +225,18 @@ export const styleMap = (styles) => {
 }
 /**
  * Internationalization (i18n) module.
- *
- * @param {currentLanguage} - The current language of the application.
- * @param {Function} t - The translation function.
- * @param {Function} setLanguage - The function to set the current language.
- * @param {Function} addTranslations - The function to add translations.
- * @param {Object} translations - The translations of the application.
- * @param {String} currentLanguage - The current language of the application.
- * @param {Object} defaultTranslations - The default translations of the application.
- * @param {Function} init - The initialization function.
- * @returns {Object} The i18n module.
  */
 export const i18n = {
+	/**
+	 * Object containing translations for different languages.
+	 * @type {Object.<string, Object>}
+	 */
 	translations: {},
 
+	/**
+	 * Get the current language of the application.
+	 * @returns {string} The current language code.
+	 */
 	get currentLanguage() {
 		const storedLanguage = localStorage.getItem('currentLanguage')
 		if (storedLanguage && this.translations[storedLanguage]) {
@@ -194,6 +247,10 @@ export const i18n = {
 		}
 	},
 
+	/**
+	 * Set the current language of the application.
+	 * @param {string} lang - The language code to set.
+	 */
 	set currentLanguage(lang) {
 		if (this.translations[lang]) {
 			localStorage.setItem('currentLanguage', lang)
@@ -202,6 +259,11 @@ export const i18n = {
 		}
 	},
 
+	/**
+	 * Translate a key to the current language.
+	 * @param {string} key - The translation key.
+	 * @returns {string} The translated string or the key if not found.
+	 */
 	t(key) {
 		const keys = key.split('.')
 		let translation = this.translations[this.currentLanguage]
@@ -216,15 +278,28 @@ export const i18n = {
 		return translation
 	},
 
+	/**
+	 * Set the current language and dispatch a language change event.
+	 * @param {string} lang - The language code to set.
+	 */
 	setLanguage(lang) {
 		this.currentLanguage = lang
 		document.dispatchEvent(new CustomEvent('language-changed'))
 	},
 
+	/**
+	 * Add translations for a specific language.
+	 * @param {string} lang - The language code.
+	 * @param {Object} translations - The translations to add.
+	 */
 	addTranslations(lang, translations) {
 		this.translations[lang] = { ...this.translations[lang], ...translations }
 	},
 
+	/**
+	 * Default translations for the application.
+	 * @type {Object.<string, Object>}
+	 */
 	defaultTranslations: {
 		en: {
 			error: 'Error',
@@ -235,6 +310,9 @@ export const i18n = {
 		},
 	},
 
+	/**
+	 * Initialize the i18n module with default translations.
+	 */
 	init() {
 		Object.entries(this.defaultTranslations).forEach(([lang, translations]) => {
 			this.addTranslations(lang, translations)
@@ -244,14 +322,25 @@ export const i18n = {
 
 i18n.init()
 
+/**
+ * Shorthand function for translation.
+ * @type {function(string): string}
+ */
 export const t = i18n.t.bind(i18n)
 /**
- * Define a reactive property on a target object.
- *
- * @param {Object} target - The target object.
- * @param {string} propertyKey - The key of the property.
- * @param {any} initialValue - The initial value of the property.
+ * Defines a reactive property on a target object.
+ * @param {Object} target - The target object on which to define the reactive property.
+ * @param {string} propertyKey - The name of the property to be defined.
+ * @param {*} initialValue - The initial value of the property.
  * @returns {void}
+ * @description
+ * This function creates a property on the target object that, when set,
+ * automatically triggers an update request on the target. It uses
+ * Object.defineProperty to create a getter and setter for the property.
+ * @example
+ * const myComponent = new MyComponent();
+ * defineReactiveProperty(myComponent, 'count', 0);
+ * myComponent.count = 5; // This will automatically trigger an update
  */
 export function defineReactiveProperty(target, propertyKey, initialValue) {
 	let value = initialValue
@@ -260,27 +349,24 @@ export function defineReactiveProperty(target, propertyKey, initialValue) {
 		get() {
 			return value
 		},
-
 		set(newValue) {
 			value = newValue
 			target.requestUpdate()
 		},
-
 		configurable: true,
 		enumerable: true,
 	})
 }
 /**
- * @param {Object} app - The application container.
+ * The main application container element.
+ * @type {HTMLElement}
  */
 const app = document.querySelector('#app')
 
 /**
  * Initializes the router of the application.
  *
- * @param {Function} initRouter - The router of the application.
- * @param {Object} routes - The routes of the application.
- * @returns {Function} The router of the application.
+ * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
 export function initRouter(routes) {
 	window.addEventListener('navigate', (event) => {
@@ -296,12 +382,10 @@ export function initRouter(routes) {
 }
 
 /**
- * Renders the content of the application.
+ * Renders the content of the application based on the current route.
  *
- * @param {Function} renderContent - The content rendering function of the application.
- * @param {Object} route - The route of the application.
- * @param {Object} routes - The routes of the application.
- * @returns {Function} The content rendering function of the application.
+ * @param {string} route - The current route path.
+ * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
 async function renderContent(route, routes) {
 	const routeInfo = routes[route]
@@ -346,12 +430,10 @@ async function renderContent(route, routes) {
 }
 
 /**
- * Navigates to the path of the application.
+ * Navigates to the specified path and updates the browser history.
  *
- * @param {Function} navigate - The navigation function of the application.
- * @param {String} path - The path of the application.
- * @param {Object} routes - The routes of the application.
- * @returns {Function} The navigation function of the application.
+ * @param {string} path - The path to navigate to.
+ * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
 function navigate(path, routes) {
 	window.history.pushState({}, '', path)
@@ -361,8 +443,7 @@ function navigate(path, routes) {
 /**
  * Sets the title of the page.
  *
- * @param {String} pageTitle - The title of the page.
- * @returns {String} The title of the page.
+ * @param {string} pageTitle - The title of the page.
  */
 function setTitle(pageTitle) {
 	const baseTitle = window.APP_TITLE || 'dim'
@@ -372,17 +453,18 @@ function setTitle(pageTitle) {
 /**
  * Sets the description of the page.
  *
- * @param {String} description - The description of the page.
- * @returns {HTMLElement} The meta description element.
+ * @param {string} description - The description of the page.
+ * @returns {HTMLMetaElement} The meta description element.
  */
 function setDescription(description) {
-	const metaDescription = document.querySelector('meta[name="description"]')
+	let metaDescription = document.querySelector('meta[name="description"]')
 	if (metaDescription) {
 		metaDescription.setAttribute('content', description)
 	} else {
-		const newMetaDescription = document.createElement('meta')
-		newMetaDescription.name = 'description'
-		newMetaDescription.content = description
-		document.head.appendChild(newMetaDescription)
+		metaDescription = document.createElement('meta')
+		metaDescription.name = 'description'
+		metaDescription.content = description
+		document.head.appendChild(metaDescription)
 	}
+	return metaDescription
 }
