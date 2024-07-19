@@ -1,14 +1,13 @@
 /**
- * @param {Object} app - The application container.
+ * The main application container element.
+ * @type {HTMLElement}
  */
 const app = document.querySelector('#app')
 
 /**
  * Initializes the router of the application.
  *
- * @param {Function} initRouter - The router of the application.
- * @param {Object} routes - The routes of the application.
- * @returns {Function} The router of the application.
+ * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
 export function initRouter(routes) {
 	window.addEventListener('navigate', (event) => {
@@ -24,12 +23,10 @@ export function initRouter(routes) {
 }
 
 /**
- * Renders the content of the application.
+ * Renders the content of the application based on the current route.
  *
- * @param {Function} renderContent - The content rendering function of the application.
- * @param {Object} route - The route of the application.
- * @param {Object} routes - The routes of the application.
- * @returns {Function} The content rendering function of the application.
+ * @param {string} route - The current route path.
+ * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
 async function renderContent(route, routes) {
 	const routeInfo = routes[route]
@@ -74,12 +71,10 @@ async function renderContent(route, routes) {
 }
 
 /**
- * Navigates to the path of the application.
+ * Navigates to the specified path and updates the browser history.
  *
- * @param {Function} navigate - The navigation function of the application.
- * @param {String} path - The path of the application.
- * @param {Object} routes - The routes of the application.
- * @returns {Function} The navigation function of the application.
+ * @param {string} path - The path to navigate to.
+ * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
 function navigate(path, routes) {
 	window.history.pushState({}, '', path)
@@ -89,8 +84,7 @@ function navigate(path, routes) {
 /**
  * Sets the title of the page.
  *
- * @param {String} pageTitle - The title of the page.
- * @returns {String} The title of the page.
+ * @param {string} pageTitle - The title of the page.
  */
 function setTitle(pageTitle) {
 	const baseTitle = window.APP_TITLE || 'dim'
@@ -100,17 +94,18 @@ function setTitle(pageTitle) {
 /**
  * Sets the description of the page.
  *
- * @param {String} description - The description of the page.
- * @returns {HTMLElement} The meta description element.
+ * @param {string} description - The description of the page.
+ * @returns {HTMLMetaElement} The meta description element.
  */
 function setDescription(description) {
-	const metaDescription = document.querySelector('meta[name="description"]')
+	let metaDescription = document.querySelector('meta[name="description"]')
 	if (metaDescription) {
 		metaDescription.setAttribute('content', description)
 	} else {
-		const newMetaDescription = document.createElement('meta')
-		newMetaDescription.name = 'description'
-		newMetaDescription.content = description
-		document.head.appendChild(newMetaDescription)
+		metaDescription = document.createElement('meta')
+		metaDescription.name = 'description'
+		metaDescription.content = description
+		document.head.appendChild(metaDescription)
 	}
+	return metaDescription
 }

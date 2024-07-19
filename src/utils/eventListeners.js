@@ -1,6 +1,5 @@
 /**
- * Utility functions for adding event listeners
- *
+ * Adds an event listener to an element that will be removed after its first invocation.
  * @param {HTMLElement} element - The element to add the event listener to.
  * @param {string} event - The event to listen for.
  * @param {Function} handler - The event handler function.
@@ -16,11 +15,10 @@ export function addEventListenerOnce(element, event, handler) {
 }
 
 /**
- * Utility functions for removing event listeners
- *
- * @param {HTMLElement} element - The element to add the event listener to.
- * @param {string} event - The event to listen for.
- * @param {Function} handler - The event handler function.
+ * Removes an event listener from an element.
+ * @param {HTMLElement} element - The element to remove the event listener from.
+ * @param {string} event - The event to stop listening for.
+ * @param {Function} handler - The event handler function to remove.
  */
 export function removeEventListener(element, event, handler) {
 	element.removeEventListener(event, handler)

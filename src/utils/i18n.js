@@ -1,19 +1,17 @@
 /**
  * Internationalization (i18n) module.
- *
- * @param {currentLanguage} - The current language of the application.
- * @param {Function} t - The translation function.
- * @param {Function} setLanguage - The function to set the current language.
- * @param {Function} addTranslations - The function to add translations.
- * @param {Object} translations - The translations of the application.
- * @param {String} currentLanguage - The current language of the application.
- * @param {Object} defaultTranslations - The default translations of the application.
- * @param {Function} init - The initialization function.
- * @returns {Object} The i18n module.
  */
 export const i18n = {
+	/**
+	 * Object containing translations for different languages.
+	 * @type {Object.<string, Object>}
+	 */
 	translations: {},
 
+	/**
+	 * Get the current language of the application.
+	 * @returns {string} The current language code.
+	 */
 	get currentLanguage() {
 		const storedLanguage = localStorage.getItem('currentLanguage')
 		if (storedLanguage && this.translations[storedLanguage]) {
@@ -24,6 +22,10 @@ export const i18n = {
 		}
 	},
 
+	/**
+	 * Set the current language of the application.
+	 * @param {string} lang - The language code to set.
+	 */
 	set currentLanguage(lang) {
 		if (this.translations[lang]) {
 			localStorage.setItem('currentLanguage', lang)
@@ -32,6 +34,11 @@ export const i18n = {
 		}
 	},
 
+	/**
+	 * Translate a key to the current language.
+	 * @param {string} key - The translation key.
+	 * @returns {string} The translated string or the key if not found.
+	 */
 	t(key) {
 		const keys = key.split('.')
 		let translation = this.translations[this.currentLanguage]
@@ -46,15 +53,28 @@ export const i18n = {
 		return translation
 	},
 
+	/**
+	 * Set the current language and dispatch a language change event.
+	 * @param {string} lang - The language code to set.
+	 */
 	setLanguage(lang) {
 		this.currentLanguage = lang
 		document.dispatchEvent(new CustomEvent('language-changed'))
 	},
 
+	/**
+	 * Add translations for a specific language.
+	 * @param {string} lang - The language code.
+	 * @param {Object} translations - The translations to add.
+	 */
 	addTranslations(lang, translations) {
 		this.translations[lang] = { ...this.translations[lang], ...translations }
 	},
 
+	/**
+	 * Default translations for the application.
+	 * @type {Object.<string, Object>}
+	 */
 	defaultTranslations: {
 		en: {
 			error: 'Error',
@@ -65,6 +85,9 @@ export const i18n = {
 		},
 	},
 
+	/**
+	 * Initialize the i18n module with default translations.
+	 */
 	init() {
 		Object.entries(this.defaultTranslations).forEach(([lang, translations]) => {
 			this.addTranslations(lang, translations)
@@ -74,4 +97,8 @@ export const i18n = {
 
 i18n.init()
 
+/**
+ * Shorthand function for translation.
+ * @type {function(string): string}
+ */
 export const t = i18n.t.bind(i18n)
