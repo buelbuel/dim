@@ -15,8 +15,18 @@ is_remote_newer() {
 	fi
 }
 
-swc_url="https://github.com/swc-project/swc/releases/latest/download/swc-linux-arm64-gnu"
-swc_local="/bin/swc-linux-arm64-gnu"
+arch=$(uname -m)
+
+if [ "$arch" = "x86_64" ]; then
+	swc_url="https://github.com/swc-project/swc/releases/latest/download/swc-linux-x64-gnu"
+	swc_local="/bin/swc-linux-x64-gnu"
+elif [ "$arch" = "aarch64" ]; then
+	swc_url="https://github.com/swc-project/swc/releases/latest/download/swc-linux-arm64-gnu"
+	swc_local="/bin/swc-linux-arm64-gnu"
+else
+	echo "Unsupported architecture: $arch"
+	exit 1
+fi
 
 if [ ! -f $swc_local ] || is_remote_newer $swc_url $swc_local; then
 	sudo curl -o $swc_local -L $swc_url
@@ -25,4 +35,4 @@ fi
 
 mkdir -p dist
 cat src/**/*.js >dist/dim.js
-/bin/swc-linux-arm64-gnu compile dist/dim.js --out-file dist/dim.min.js --config-file .swcrc
+$swc_local compile dist/dim.js --out-file dist/dim.min.js --config-file .swcrc
