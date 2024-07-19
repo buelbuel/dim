@@ -122,12 +122,14 @@ initRouter(routes)
 const { i18n } = dim
 
 i18n.addTranslations('en', {
-	'hello': 'Hello',
+	hello: {
+		world: 'World',
+	}
 })
 
 const { t } = dim
 
-<p>${t('hello')}</p>
+<p>${t('hello.world')}</p>
 ```
 
 ## Contributing
