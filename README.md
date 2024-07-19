@@ -125,7 +125,9 @@ i18n.addTranslations('en', {
 	'hello': 'Hello',
 })
 
-<p>${this.t('hello')}</p>
+const { t } = dim
+
+<p>${t('hello')}</p>
 ```
 
 ## Contributing

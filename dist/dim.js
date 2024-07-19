@@ -15,7 +15,6 @@
  * @method t - The translation method.
  * @method render - Render HTML content.
  * @method static define - Define custom names for components.
- *
  */
 export class BaseElement extends HTMLElement {
 	constructor() {
@@ -170,22 +169,51 @@ export const styleMap = (styles) => {
 		.join('; ')
 }
 /**
- * Internationalization module
- * 
+ * Internationalization (i18n) module.
+ *
+ * @param {currentLanguage} - The current language of the application.
+ * @param {Function} t - The translation function.
+ * @param {Function} setLanguage - The function to set the current language.
+ * @param {Function} addTranslations - The function to add translations.
+ * @param {Object} translations - The translations of the application.
+ * @param {String} currentLanguage - The current language of the application.
+ * @param {Object} defaultTranslations - The default translations of the application.
+ * @param {Function} init - The initialization function.
+ * @returns {Object} The i18n module.
  */
 export const i18n = {
 	translations: {},
 
 	get currentLanguage() {
-		return localStorage.getItem('currentLanguage') || 'en'
+		const storedLanguage = localStorage.getItem('currentLanguage')
+		if (storedLanguage && this.translations[storedLanguage]) {
+			return storedLanguage
+		} else {
+			localStorage.removeItem('currentLanguage')
+			return 'en'
+		}
 	},
 
 	set currentLanguage(lang) {
-		localStorage.setItem('currentLanguage', lang)
+		if (this.translations[lang]) {
+			localStorage.setItem('currentLanguage', lang)
+		} else {
+			localStorage.setItem('currentLanguage', 'en')
+		}
 	},
 
 	t(key) {
-		return this.translations[this.currentLanguage][key] || key
+		const keys = key.split('.')
+		let translation = this.translations[this.currentLanguage]
+
+		for (const k of keys) {
+			if (translation && translation[k] !== undefined) {
+				translation = translation[k]
+			} else {
+				return key
+			}
+		}
+		return translation
 	},
 
 	setLanguage(lang) {
@@ -196,13 +224,34 @@ export const i18n = {
 	addTranslations(lang, translations) {
 		this.translations[lang] = { ...this.translations[lang], ...translations }
 	},
+
+	defaultTranslations: {
+		en: {
+			error: 'Error',
+			error_invalid_component_or_layout: 'Invalid component or layout',
+			error_loading_page: 'Error loading page',
+			page_not_found: 'Page Not Found',
+			page_not_found_description: 'The requested page could not be found.',
+		},
+	},
+
+	init() {
+		Object.entries(this.defaultTranslations).forEach(([lang, translations]) => {
+			this.addTranslations(lang, translations)
+		})
+	},
 }
+
+i18n.init()
+
+export const t = i18n.t.bind(i18n)
 /**
  * Define a reactive property on a target object.
  *
  * @param {Object} target - The target object.
  * @param {string} propertyKey - The key of the property.
  * @param {any} initialValue - The initial value of the property.
+ * @returns {void}
  */
 export function defineReactiveProperty(target, propertyKey, initialValue) {
 	let value = initialValue
@@ -222,9 +271,6 @@ export function defineReactiveProperty(target, propertyKey, initialValue) {
 	})
 }
 /**
- * Defines the router of the application.
- *
- * @param {Object} routes - The routes of the application.
  * @param {Object} app - The application container.
  */
 const app = document.querySelector('#app')
@@ -233,6 +279,8 @@ const app = document.querySelector('#app')
  * Initializes the router of the application.
  *
  * @param {Function} initRouter - The router of the application.
+ * @param {Object} routes - The routes of the application.
+ * @returns {Function} The router of the application.
  */
 export function initRouter(routes) {
 	window.addEventListener('navigate', (event) => {
@@ -252,6 +300,8 @@ export function initRouter(routes) {
  *
  * @param {Function} renderContent - The content rendering function of the application.
  * @param {Object} route - The route of the application.
+ * @param {Object} routes - The routes of the application.
+ * @returns {Function} The content rendering function of the application.
  */
 async function renderContent(route, routes) {
 	const routeInfo = routes[route]
@@ -270,20 +320,28 @@ async function renderContent(route, routes) {
 				app.appendChild(layoutContent)
 				app.querySelector('#app-content').appendChild(componentInstance)
 				app.className = routeInfo.layout
-				setTitle(routeInfo.title || componentInstance.constructor.name)
+
+				const title = i18n.t(routeInfo.titleKey || componentInstance.constructor.name)
+				const description = i18n.t(routeInfo.descriptionKey || '')
+
+				setTitle(title)
+				setDescription(description)
 			} else {
 				console.error('Invalid component or layout:', Component, layoutTemplate)
 				app.innerHTML = '<div>Error: Invalid component or layout</div>'
-				setTitle('Error')
+				setTitle(i18n.t('error'))
+				setDescription(i18n.t('error_invalid_component_or_layout'))
 			}
 		} catch (error) {
 			console.error('Error loading module:', error)
 			app.innerHTML = '<div>Error loading page</div>'
-			setTitle('Error')
+			setTitle(i18n.t('error'))
+			setDescription(i18n.t('error_loading_page'))
 		}
 	} else {
 		app.innerHTML = '<div>Page not found</div>'
-		setTitle('Page Not Found')
+		setTitle(i18n.t('page_not_found'))
+		setDescription(i18n.t('page_not_found_description'))
 	}
 }
 
@@ -292,6 +350,8 @@ async function renderContent(route, routes) {
  *
  * @param {Function} navigate - The navigation function of the application.
  * @param {String} path - The path of the application.
+ * @param {Object} routes - The routes of the application.
+ * @returns {Function} The navigation function of the application.
  */
 function navigate(path, routes) {
 	window.history.pushState({}, '', path)
@@ -302,8 +362,27 @@ function navigate(path, routes) {
  * Sets the title of the page.
  *
  * @param {String} pageTitle - The title of the page.
+ * @returns {String} The title of the page.
  */
 function setTitle(pageTitle) {
 	const baseTitle = window.APP_TITLE || 'dim'
 	document.title = `${pageTitle} | ${baseTitle}`
+}
+
+/**
+ * Sets the description of the page.
+ * 
+ * @param {String} description - The description of the page.
+ * @returns {HTMLElement} The meta description element.
+ */
+function setDescription(description) {
+	const metaDescription = document.querySelector('meta[name="description"]')
+	if (metaDescription) {
+		metaDescription.setAttribute('content', description)
+	} else {
+		const newMetaDescription = document.createElement('meta')
+		newMetaDescription.name = 'description'
+		newMetaDescription.content = description
+		document.head.appendChild(newMetaDescription)
+	}
 }

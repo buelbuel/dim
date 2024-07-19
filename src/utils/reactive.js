@@ -4,6 +4,7 @@
  * @param {Object} target - The target object.
  * @param {string} propertyKey - The key of the property.
  * @param {any} initialValue - The initial value of the property.
+ * @returns {void}
  */
 export function defineReactiveProperty(target, propertyKey, initialValue) {
 	let value = initialValue

@@ -15,7 +15,6 @@
  * @method t - The translation method.
  * @method render - Render HTML content.
  * @method static define - Define custom names for components.
- *
  */
 export class BaseElement extends HTMLElement {
 	constructor() {
