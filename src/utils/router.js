@@ -7,7 +7,10 @@ const app = document.querySelector('#app')
 /**
  * Initializes the router of the application.
  *
+ * @function
  * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
+ * @listens window#navigate
+ * @listens window#popstate
  */
 export function initRouter(routes) {
 	window.addEventListener('navigate', (event) => {
@@ -24,9 +27,11 @@ export function initRouter(routes) {
 
 /**
  * Renders the content of the application based on the current route.
- *
+ * @async
+ * @function
  * @param {string} route - The current route path.
  * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
+ * @throws {Error} Throws an error if the module fails to load.
  */
 async function renderContent(route, routes) {
 	const routeInfo = routes[route]
@@ -72,7 +77,7 @@ async function renderContent(route, routes) {
 
 /**
  * Navigates to the specified path and updates the browser history.
- *
+ * @function
  * @param {string} path - The path to navigate to.
  * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
@@ -83,7 +88,7 @@ function navigate(path, routes) {
 
 /**
  * Sets the title of the page.
- *
+ * @function
  * @param {string} pageTitle - The title of the page.
  */
 function setTitle(pageTitle) {
@@ -93,7 +98,7 @@ function setTitle(pageTitle) {
 
 /**
  * Sets the description of the page.
- *
+ * @function
  * @param {string} description - The description of the page.
  * @returns {HTMLMetaElement} The meta description element.
  */

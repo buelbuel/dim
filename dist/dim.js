@@ -3,9 +3,7 @@
  * @extends HTMLElement
  */
 export class BaseElement extends HTMLElement {
-	/**
-	 * Creates an instance of BaseElement.
-	 */
+	/** Creates an instance of BaseElement. */
 	constructor() {
 		super()
 		/**
@@ -20,25 +18,19 @@ export class BaseElement extends HTMLElement {
 		this._eventListeners = []
 	}
 
-	/**
-	 * Invoked when the element is added to the DOM.
-	 */
+	/** Invoked when the element is added to the DOM. */
 	connectedCallback() {
 		this.update()
 		this.addEventListeners()
 		document.addEventListener('language-changed', () => this.update())
 	}
 
-	/**
-	 * Invoked when the element is removed from the DOM.
-	 */
+	/** Invoked when the element is removed from the DOM. */
 	disconnectedCallback() {
 		this.removeEventListeners()
 	}
 
-	/**
-	 * Updates the element's content.
-	 */
+	/** Updates the element's content. */
 	update() {
 		const oldContent = this.innerHTML
 		const newContent = this.render()
@@ -49,9 +41,7 @@ export class BaseElement extends HTMLElement {
 		}
 	}
 
-	/**
-	 * Requests an update to be performed on the next animation frame.
-	 */
+	/** Requests an update to be performed on the next animation frame. */
 	requestUpdate() {
 		if (!this._updateRequested) {
 			this._updateRequested = true
@@ -96,14 +86,10 @@ export class BaseElement extends HTMLElement {
 		}
 	}
 
-	/**
-	 * Adds event listeners to the element.
-	 */
+	/** Adds event listeners to the element. */
 	addEventListeners() {}
 
-	/**
-	 * Removes all event listeners from the element.
-	 */
+	/** Removes all event listeners from the element. */
 	removeEventListeners() {
 		this._eventListeners.forEach(({ element, event, handler }) => {
 			element.removeEventListener(event, handler)
@@ -141,9 +127,7 @@ export class BaseElement extends HTMLElement {
  * @extends BaseElement
  */
 export class ShadowElement extends BaseElement {
-	/**
-	 * Creates an instance of ShadowElement and attaches a shadow root.
-	 */
+	/** Creates an instance of ShadowElement and attaches a shadow root. */
 	constructor() {
 		super()
 		/**
@@ -241,9 +225,7 @@ export const styleMap = (styles) => {
 		.map(([key, value]) => `${key}: ${value}`)
 		.join('; ')
 }
-/**
- * Internationalization (i18n) module.
- */
+/** Internationalization (i18n) module. */
 export const i18n = {
 	/**
 	 * Object containing translations for different languages.
@@ -328,9 +310,7 @@ export const i18n = {
 		},
 	},
 
-	/**
-	 * Initialize the i18n module with default translations.
-	 */
+	/** Initialize the i18n module with default translations. */
 	init() {
 		Object.entries(this.defaultTranslations).forEach(([lang, translations]) => {
 			this.addTranslations(lang, translations)
@@ -351,31 +331,22 @@ export const t = i18n.t.bind(i18n)
  * @param {string} propertyKey - The name of the property to be defined.
  * @param {*} initialValue - The initial value of the property.
  * @returns {void}
- * @description
- * This function creates a property on the target object that, when set,
- * automatically triggers an update request on the target. It uses
- * Object.defineProperty to create a getter and setter for the property.
- * @example
- * const myComponent = new MyComponent();
- * defineReactiveProperty(myComponent, 'count', 0);
- * myComponent.count = 5; // This will automatically trigger an update
  */
 export function defineReactiveProperty(target, propertyKey, initialValue) {
-	let value = initialValue
+    let value = initialValue;
 
-	Object.defineProperty(target, propertyKey, {
-		get() {
-			return value
-		},
-		set(newValue) {
-			value = newValue
-			target.requestUpdate()
-		},
-		configurable: true,
-		enumerable: true,
-	})
-}
-/**
+    Object.defineProperty(target, propertyKey, {
+        get() {
+            return value;
+        },
+        set(newValue) {
+            value = newValue;
+            target.requestUpdate();
+        },
+        configurable: true,
+        enumerable: true,
+    });
+}/**
  * The main application container element.
  * @type {HTMLElement}
  */
@@ -384,7 +355,10 @@ const app = document.querySelector('#app')
 /**
  * Initializes the router of the application.
  *
+ * @function
  * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
+ * @listens window#navigate
+ * @listens window#popstate
  */
 export function initRouter(routes) {
 	window.addEventListener('navigate', (event) => {
@@ -401,9 +375,11 @@ export function initRouter(routes) {
 
 /**
  * Renders the content of the application based on the current route.
- *
+ * @async
+ * @function
  * @param {string} route - The current route path.
  * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
+ * @throws {Error} Throws an error if the module fails to load.
  */
 async function renderContent(route, routes) {
 	const routeInfo = routes[route]
@@ -449,7 +425,7 @@ async function renderContent(route, routes) {
 
 /**
  * Navigates to the specified path and updates the browser history.
- *
+ * @function
  * @param {string} path - The path to navigate to.
  * @param {Object.<string, {component: Function, layout: string, titleKey?: string, descriptionKey?: string}>} routes - The routes configuration object.
  */
@@ -460,7 +436,7 @@ function navigate(path, routes) {
 
 /**
  * Sets the title of the page.
- *
+ * @function
  * @param {string} pageTitle - The title of the page.
  */
 function setTitle(pageTitle) {
@@ -470,7 +446,7 @@ function setTitle(pageTitle) {
 
 /**
  * Sets the description of the page.
- *
+ * @function
  * @param {string} description - The description of the page.
  * @returns {HTMLMetaElement} The meta description element.
  */

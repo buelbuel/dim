@@ -1,6 +1,4 @@
-/**
- * Internationalization (i18n) module.
- */
+/** Internationalization (i18n) module. */
 export const i18n = {
 	/**
 	 * Object containing translations for different languages.
@@ -85,9 +83,7 @@ export const i18n = {
 		},
 	},
 
-	/**
-	 * Initialize the i18n module with default translations.
-	 */
+	/** Initialize the i18n module with default translations. */
 	init() {
 		Object.entries(this.defaultTranslations).forEach(([lang, translations]) => {
 			this.addTranslations(lang, translations)

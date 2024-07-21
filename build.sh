@@ -21,8 +21,8 @@ if [ "$arch" = "x86_64" ]; then
 	swc_url="https://github.com/swc-project/swc/releases/latest/download/swc-linux-x64-gnu"
 	swc_local="/bin/swc-linux-x64-gnu"
 elif [ "$arch" = "aarch64" ]; then
-	swc_url="https://github.com/swc-project/swc/releases/latest/download/swc-linux-arm64-gnu"
-	swc_local="/bin/swc-linux-arm64-gnu"
+	swc_url="https://github.com/swc-project/swc/releases/latest/download/swc-linux-arm64-musl"
+	swc_local="/bin/swc-linux-arm64-musl"
 else
 	echo "Unsupported architecture: $arch"
 	exit 1
@@ -34,5 +34,5 @@ if [ ! -f $swc_local ] || is_remote_newer $swc_url $swc_local; then
 fi
 
 mkdir -p dist
-cat src/**/*.js >dist/dim.js
+cat src/**/*.js > dist/dim.js
 $swc_local compile dist/dim.js --out-file dist/dim.min.js --config-file .swcrc

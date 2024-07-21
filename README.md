@@ -1,4 +1,5 @@
-# dim
+[![](https://data.jsdelivr.com/v1/package/gh/buelbuel/dim/badge?style=rounded)](https://www.jsdelivr.com/package/gh/buelbuel/dim)
+![GitHub License](https://img.shields.io/github/license/buelbuel/dim)
 
 dim is an idiomatic web component helper library, designed as a sane alternative to the node madness of todays web. It focuses on simplicity and adherence to web standards only, offering quality-of-life features - but with zero dependencies.
 

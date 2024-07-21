@@ -3,9 +3,7 @@
  * @extends HTMLElement
  */
 export class BaseElement extends HTMLElement {
-	/**
-	 * Creates an instance of BaseElement.
-	 */
+	/** Creates an instance of BaseElement. */
 	constructor() {
 		super()
 		/**
@@ -20,25 +18,19 @@ export class BaseElement extends HTMLElement {
 		this._eventListeners = []
 	}
 
-	/**
-	 * Invoked when the element is added to the DOM.
-	 */
+	/** Invoked when the element is added to the DOM. */
 	connectedCallback() {
 		this.update()
 		this.addEventListeners()
 		document.addEventListener('language-changed', () => this.update())
 	}
 
-	/**
-	 * Invoked when the element is removed from the DOM.
-	 */
+	/** Invoked when the element is removed from the DOM. */
 	disconnectedCallback() {
 		this.removeEventListeners()
 	}
 
-	/**
-	 * Updates the element's content.
-	 */
+	/** Updates the element's content. */
 	update() {
 		const oldContent = this.innerHTML
 		const newContent = this.render()
@@ -49,9 +41,7 @@ export class BaseElement extends HTMLElement {
 		}
 	}
 
-	/**
-	 * Requests an update to be performed on the next animation frame.
-	 */
+	/** Requests an update to be performed on the next animation frame. */
 	requestUpdate() {
 		if (!this._updateRequested) {
 			this._updateRequested = true
@@ -96,14 +86,10 @@ export class BaseElement extends HTMLElement {
 		}
 	}
 
-	/**
-	 * Adds event listeners to the element.
-	 */
+	/** Adds event listeners to the element. */
 	addEventListeners() {}
 
-	/**
-	 * Removes all event listeners from the element.
-	 */
+	/** Removes all event listeners from the element. */
 	removeEventListeners() {
 		this._eventListeners.forEach(({ element, event, handler }) => {
 			element.removeEventListener(event, handler)

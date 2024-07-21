@@ -3,9 +3,7 @@
  * @extends BaseElement
  */
 export class ShadowElement extends BaseElement {
-	/**
-	 * Creates an instance of ShadowElement and attaches a shadow root.
-	 */
+	/** Creates an instance of ShadowElement and attaches a shadow root. */
 	constructor() {
 		super()
 		/**
