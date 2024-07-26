@@ -42,7 +42,11 @@ async function renderContent(route, routes) {
 			const Component = module.default
 			const layoutTemplate = document.getElementById(routeInfo.layout)
 
-			if (Component && Component.prototype instanceof HTMLElement && layoutTemplate) {
+			if (
+				Component &&
+				Component.prototype instanceof HTMLElement &&
+				layoutTemplate
+			) {
 				const layoutContent = layoutTemplate.content.cloneNode(true)
 				const componentInstance = new Component()
 
@@ -51,13 +55,19 @@ async function renderContent(route, routes) {
 				app.querySelector('#app-content').appendChild(componentInstance)
 				app.className = routeInfo.layout
 
-				const title = i18n.t(routeInfo.titleKey || componentInstance.constructor.name)
+				const title = i18n.t(
+					routeInfo.titleKey || componentInstance.constructor.name
+				)
 				const description = i18n.t(routeInfo.descriptionKey || '')
 
 				setTitle(title)
 				setDescription(description)
 			} else {
-				console.error('Invalid component or layout:', Component, layoutTemplate)
+				console.error(
+					'Invalid component or layout:',
+					Component,
+					layoutTemplate
+				)
 				app.innerHTML = i18n.t('error_invalid_component_or_layout')
 				setTitle(i18n.t('error'))
 				setDescription(i18n.t('error_invalid_component_or_layout'))
@@ -92,7 +102,7 @@ function navigate(path, routes) {
  * @param {string} pageTitle - The title of the page.
  */
 function setTitle(pageTitle) {
-	const baseTitle = window.APP_TITLE || 'dim'
+	const baseTitle = window.APP_TITLE || ''
 	document.title = `${pageTitle} | ${baseTitle}`
 }
 
