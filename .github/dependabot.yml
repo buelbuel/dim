@@ -1,6 +1,16 @@
 version: 2
 updates:
+  # DevContainers
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels:
+      - "dependencies"
+      - "github_actions"

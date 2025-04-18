@@ -76,9 +76,7 @@ export class BaseElement extends HTMLElement {
 
 			if (existingListener) {
 				element.removeEventListener(event, existingListener.handler)
-				this._eventListeners = this._eventListeners.filter(
-					(listener) => listener !== existingListener
-				)
+				this._eventListeners = this._eventListeners.filter((listener) => listener !== existingListener)
 			}
 
 			element.addEventListener(event, handler)

@@ -1,5 +1,5 @@
 {
-    "name": "dim",
+	"name": "dim",
 	"image": "alpine:latest",
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
@@ -40,6 +40,6 @@
 				"terminal.integrated.defaultProfile.linux": "zsh"
 			}
 		}
-    },
-    "postCreateCommand": "chmod +x build.sh"
+	},
+	"postCreateCommand": "chmod +x build.sh"
 }

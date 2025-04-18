@@ -14,9 +14,7 @@ export class ShadowElement extends BaseElement {
 		this._shadowRoot = this.attachShadow ? this.attachShadow({ mode: 'open' }) : this
 
 		if (this._shadowRoot === this) {
-			console.warn(
-				'ShadowDOM is not supported in this environment. Falling back to light DOM.'
-			)
+			console.warn('ShadowDOM is not supported in this environment. Falling back to light DOM.')
 		}
 	}
 

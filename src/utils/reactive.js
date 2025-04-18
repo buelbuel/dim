@@ -6,17 +6,17 @@
  * @returns {void}
  */
 export function defineReactiveProperty(target, propertyKey, initialValue) {
-    let value = initialValue;
+	let value = initialValue
 
-    Object.defineProperty(target, propertyKey, {
-        get() {
-            return value;
-        },
-        set(newValue) {
-            value = newValue;
-            target.requestUpdate();
-        },
-        configurable: true,
-        enumerable: true,
-    });
+	Object.defineProperty(target, propertyKey, {
+		get() {
+			return value
+		},
+		set(newValue) {
+			value = newValue
+			target.requestUpdate()
+		},
+		configurable: true,
+		enumerable: true,
+	})
 }
